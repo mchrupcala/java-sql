@@ -199,3 +199,48 @@ list orders grouped by customer's city showing number of orders per city. Return
     ON c.customer_id = o.customer_id
     GROUP BY c.city
     ORDER BY count(c.city) desc
+
+
+## DATA NORMALIZATION
+
+| person_id | person_name | fenced_yard | city_dweller |
+|-----------|-------------|-------------|--------------|
+| 1         | Jane        | No          | Yes          |
+| 2         | Bob         | No          | No           |
+| 3         | Sam         | Yes         | No           |
+
+
+| pet_id | person_id | pet_name   | pet_type |
+|--------|-----------|------------|----------|
+| 1      | 1         | Ellie      | Dog      |
+| 2      | 2         | Joe        | Horse    |
+| 3      | 3         | Ginger     | Dog      |
+| 4      | 1         | Tiger      | Cat      |
+| 5      | 3         | Miss Kitty | Cat      |
+| 6      | 1         | Toby       | Turtle   |
+| 7      | 3         | Bubble     | Fish     |
+
+
+## Stretch Goals
+
+DELETE
+from customers
+where customer_id IN (
+	select c.customer_id
+	from customers c FULL OUTER JOIN orders o 
+	ON c.customer_id = o.customer_id
+	WHERE o.order_id is NULL
+)
+
+
+CREATE TABLE accounts (
+	id serial PRIMARY KEY,
+	name text UNIQUE,
+	budget INTEGER NOT NULL
+)
+
+INSERT INTO accounts (name, budget)
+VALUES ('Coke', 40000),
+('ABC', 20000),
+('Geico', 35000)
+('Express', 10000)
