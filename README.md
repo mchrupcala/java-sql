@@ -127,3 +127,75 @@ Take the following data and normalize it into a 3NF database.  You can use the w
   - the `id` should be the primary key for the table.
   - account `name` should be unique.
   - account `budget` is required.
+
+##ANSWERS
+
+find all customers that live in London. Returns 6 records.
+    SELECT * FROM customers
+    WHERE city = 'London'
+
+find all customers with postal code 1010. Returns 3 customers.
+    SELECT * FROM customers
+    WHERE postal_code = '1010'
+
+find the phone number for the supplier with the id 11. Should be (010) 9984510.
+    SELECT phone FROM suppliers
+    WHERE supplier_id = 11
+
+
+list orders descending by the order date. The order with date 1998-05-06 should be at the top.
+    SELECT * FROM orders
+    ORDER BY order_date desc
+
+
+find all suppliers who have names longer than 20 characters. You can use length(company_name) to get the length of the name. Returns 11 records.
+    SELECT * FROM suppliers
+    WHERE length(company_name) > 20
+
+
+find all customers that include the word 'MARKET' in the contact title. Should return 19 records.
+    SELECT * FROM customers
+    WHERE contact_title ILIKE '%market%'
+
+
+add a customer record for
+customer id is 'SHIRE'
+company name is 'The Shire'
+contact name is 'Bilbo Baggins'
+the address is '1 Hobbit-Hole'
+ths city is 'Bag End'
+the postal code is '111'
+the country is 'Middle Earth'
+    INSERT INTO customers (customer_id, company_name, contact_name, address, city, postal_code, country)
+    VALUES ('SHIRE', 'The Shire', 'Bilbo Baggins', '1 Hobbit-Hole', 'Bag End', '111', 'Middle Earth')
+
+
+
+update Bilbo Baggins record so that the postal code changes to "11122".
+    UPDATE customers
+    SET postal_code = '11122'
+    WHERE customer_id = 'SHIRE'
+
+list orders grouped by customer showing the number of orders per customer. Rattlesnake Canyon Grocery should have 18 orders.
+    SELECT o.customer_id, c.company_name, count(c.company_name) FROM orders o
+    left JOIN customers c
+    ON c.customer_id = o.customer_id
+    GROUP by c.company_name, o.customer_id
+
+
+
+
+list customers names and the number of orders per customer. Sort the list by number of orders in descending order. _Save-a-lot Markets should be at the top with 31 orders followed by Ernst Handle with 30 orders. Last should be Centro comercial Moctezuma with 1 order.
+    SELECT o.customer_id, c.company_name, count(c.company_name) FROM orders o
+    left JOIN customers c
+    ON c.customer_id = o.customer_id
+    GROUP by c.company_name, o.customer_id
+    order by count(c.company_name) desc
+
+
+list orders grouped by customer's city showing number of orders per city. Returns 69 Records with Aachen showing 6 orders and Albuquerque showing 18 orders.
+    select c.city, count(c.city)
+    from orders o LEFT JOIN customers c 
+    ON c.customer_id = o.customer_id
+    GROUP BY c.city
+    ORDER BY count(c.city) desc
